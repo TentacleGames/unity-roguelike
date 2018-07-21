@@ -35,6 +35,9 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
+      parameters.Add("rooms_count", 5);
+      parameters.Add("min_room_size", 3);
+      parameters.Add("max_room_size", 5);
       dungeonScript = GetComponent<DungeonGenerator>();
       
       dungeonScript.generate(parameters);
