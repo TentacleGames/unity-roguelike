@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Random = UnityEngine.Random; 
+using Random = UnityEngine.Random;
 
 public class DungeonGenerator: MonoBehaviour{
    
@@ -65,6 +65,80 @@ public class DungeonGenerator: MonoBehaviour{
       
    }
 
+   private Room FindRoom(Room room, List<Room> rooms) {
+      Room result = null;
+      if(rooms == null || rooms.Count == 0)
+         return result;
+      int param = currParams["base_connecting"];
+      if (param == 2) { // random
+         int i = Random.Range(0, rooms.Count-1);
+         result = rooms[i];
+      }
+      else {
+         Point mid = new Point();
+         mid.x = room.x + room.wd/2;
+         mid.y = room.y + room.hd/2;
+         float dist;
+         if (param == 0) //closest
+            dist = Mathf.Pow(currParams["width"],2) + Mathf.Pow(currParams["height"],2); //init min distance
+         else
+            dist = 0; //init max distance
+         foreach(Room check in rooms) {
+            if (check.id==room.id)
+               continue;
+            Point mid_c = new Point();
+            mid_c.x = check.x + check.wd/2;
+            mid_c.y = check.y + check.hd/2;
+            float dist_c = Mathf.Pow(mid.x-mid_c.x, 2) + Mathf.Pow(mid.x-mid_c.x, 2);
+            //squared dist is ok. if squared is minimal/maximal, then is't really minimal/maximal
+            if (dist_c<dist && param==0 || dist_c>dist && param == 1) {
+               dist = dist_c;
+               result = check;
+            }
+         }
+      }
+      return result;
+   }
+
+   private void AddConnection(Room room_a, Room room_b) {
+            //new_corridor = None
+            //new_portal = None
+            //if self.params.get('transitions_type') == 'corridors':
+            //    new_corridor = self._generate_corridor(room_a, room_b)
+            //elif self.params.get('transitions_type') == 'portals':
+            //    new_portal = self._generate_portal(room_a, room_b)
+            //elif self.params.get('transitions_type') == 'both':
+            //    if randint(1, 100) >= self.params['portals_percent']:
+            //        new_corridor = self._generate_corridor(room_a, room_b)
+            //    else:
+            //        new_portal = self._generate_portal(room_a, room_b)
+            //if new_corridor:
+            //    self.corridors.append(new_corridor)
+            //if new_portal:
+            //    self.portals.append(new_portal)
+            //    self.blocked_points.append(new_portal.P1)
+            //    self.blocked_points.append(new_portal.P2)
+            //for r in self.connections[room_b.id]:
+            //    self.connections[r] = self.connections[r] | self.connections[room_a.id]
+            //for r in self.connections[room_a.id]:
+            //    self.connections[r] = self.connections[r] | self.connections[room_b.id]
+   }
+
+   private void SetConnections() {
+      // if we need at least one transition from room to another
+      if (currParams["each_room_transitions"] == 1)
+         foreach(Room room_a in rooms) {
+            Room room_b = FindRoom(room_a, rooms);
+            AddConnection(room_a, room_b);
+         }
+      // if we need guarantees that each rooms is connected
+      //if (currParams["are_connected"] == 1)
+      //   while(!IsConnected()) {
+      //   ...
+      //   }
+
+   }
+
    private void GetResult() {
       //setting result map
       dungeonMap = SetVoidMap();
@@ -89,7 +163,6 @@ public class DungeonGenerator: MonoBehaviour{
 
    }
    }
-
 
    private Room GenerateRoom() {
       Room room = null;
