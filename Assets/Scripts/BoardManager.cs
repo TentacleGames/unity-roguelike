@@ -20,8 +20,13 @@ public class BoardManager : MonoBehaviour
    public int columns = 10;                                         //Number of columns in our game board.
    public int rows = 10;                                            //Number of rows in our game board.
    public GameObject exit;                                         //Prefab to spawn for exit.
+   public GameObject enter;                                         //Prefab to spawn for exit.
+   public GameObject portal;                                         //Prefab to spawn for exit.
+   public GameObject door;                                         //Prefab to spawn for exit.
    public GameObject[] floorTiles;                                 //Array of floor prefabs.
+   public GameObject[] floorRoomTiles;                                 //Array of floor prefabs.
    public GameObject[] wallTiles;                                  //Array of wall prefabs.
+   public GameObject[] wallRoomTiles;                                  //Array of wall prefabs.
    public GameObject[] enemyTiles;                                 //Array of enemy prefabs.
    public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
         
@@ -35,9 +40,16 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
-      parameters.Add("rooms_count", 5);
+      parameters.Add("rooms_count", 3);
       parameters.Add("min_room_size", 3);
       parameters.Add("max_room_size", 5);
+      parameters.Add("transitions_type", 0);
+      parameters.Add("are_connected", 1);
+      parameters.Add("max_connections_delta", 1);
+      
+      
+      
+      
       dungeonScript = GetComponent<DungeonGenerator>();
       
       dungeonScript.generate(parameters);
@@ -59,11 +71,20 @@ public class BoardManager : MonoBehaviour
                if(x == -1 || x == columns || y == -1 || y == rows)
                   toInstantiate = outerWallTiles [Random.Range (0, outerWallTiles.Length)];
                else
-                  switch(dungeonMap[x][y]) {
+                  switch(dungeonMap[x][y])
+                  {
                      case 0: break;
-                     case 1: toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)]; break;
-                     case 2: toInstantiate = wallTiles[Random.Range (0, wallTiles.Length)]; break;
+                     case 1: toInstantiate = floorRoomTiles[Random.Range (0, floorTiles.Length)]; break;
+                     case 2: toInstantiate = wallRoomTiles[Random.Range (0, wallTiles.Length)]; break;
+                     case 3:
+                     case 4: toInstantiate = door; break;
+                     case 5: toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)]; break;
+                     case 6: toInstantiate = wallTiles[Random.Range (0, wallTiles.Length)]; break;
+                     case 7: toInstantiate = portal; break;
+                     case 8: toInstantiate = enter; break;
+                     case 9: toInstantiate = exit; break;
                      default: Debug.Log("Unexpected value"); break;
+
                   }
                if(toInstantiate != null) {
                   GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
