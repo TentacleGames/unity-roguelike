@@ -29,6 +29,8 @@ public class BoardManager : MonoBehaviour
    public GameObject[] wallRoomTiles;                                  //Array of wall prefabs.
    public GameObject[] enemyTiles;                                 //Array of enemy prefabs.
    public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
+   public GameObject playerTile;
+   public int px, py;
         
    private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
    private DungeonGenerator dungeonScript;
@@ -40,21 +42,19 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
-      parameters.Add("rooms_count", 3);
+      parameters.Add("rooms_count", 15);
       parameters.Add("min_room_size", 3);
-      parameters.Add("max_room_size", 5);
+      parameters.Add("max_room_size", 7);
       parameters.Add("transitions_type", 0);
       parameters.Add("are_connected", 1);
       parameters.Add("max_connections_delta", 1);
-      
-      
-      
+      parameters.Add("portals_percent", 10);
       
       dungeonScript = GetComponent<DungeonGenerator>();
       
       dungeonScript.generate(parameters);
       List<List<int>> dungeonMap = dungeonScript.dungeonMap;
-            
+      
       BoardSetup (dungeonMap); //Creates the outer walls and floor.
    }
    
@@ -92,5 +92,10 @@ public class BoardManager : MonoBehaviour
                }
             }
       }
+      py = dungeonScript.playerX;
+      px = dungeonScript.playerY;
+      GameObject p_instance = Instantiate (playerTile, new Vector3 (px, py, 0f), Quaternion.identity) as GameObject;
+      p_instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+      
    }
 }

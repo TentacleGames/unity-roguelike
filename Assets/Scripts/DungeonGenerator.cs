@@ -17,6 +17,7 @@ public class DungeonGenerator: MonoBehaviour
    private int[][] neighborhood = new int[][] { new int[] {0,-1}, new int[] {0,1}, new int[] {-1,0}, new int[] {1,0} };
    private Dictionary<int,HashSet<int>> connections = new Dictionary<int,HashSet<int>>();
    private Dictionary<int,HashSet<int>> not_connected = new Dictionary<int,HashSet<int>>();
+   public int playerX, playerY;
    
 
    //class generator
@@ -205,7 +206,7 @@ public class DungeonGenerator: MonoBehaviour
       Point cur_p = dest_p;
       result.Add(cur_p);
       int pathType = currParams["corridor_curves"]==2 ? Random.Range(0,2): currParams["corridor_curves"];
-      while (cur_p.x != start_p.x && cur_p.y != start_p.y)
+      while (cur_p.x != start_p.x || cur_p.y != start_p.y)
       {
          int cur_idx = waveField[cur_p.y][cur_p.x];
          List<Point> possibleMoves = new List<Point>();
@@ -320,9 +321,17 @@ public class DungeonGenerator: MonoBehaviour
          connections.Add(room.id, con);
       }
       SetConnections();
+      SetPlayer();
       //SetExits();
       GetResult();
       
+   }
+
+   private void SetPlayer()
+   {
+      int rand_room = Random.Range(0, rooms.Count);
+      playerX = Random.Range(rooms[rand_room].x+1, rooms[rand_room].x+rooms[rand_room].wd);
+      playerY = Random.Range(rooms[rand_room].y+1, rooms[rand_room].y+rooms[rand_room].hd);
    }
 
    private Room FindRoom(Room room, List<Room> rooms)
