@@ -1,11 +1,14 @@
 fileFormatVersion: 2
-guid: f9a7b44821960da4aa9dcb31b8b23fd7
-timeCreated: 1549060552
+guid: 177082dc9557fe9489870f7fe83a521e
+timeCreated: 1549133902
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: door_0
-    21300002: door_1
+    21300000: door_closing_0
+    21300002: door_closing_1
+    21300004: door_closing_2
+    21300006: door_closing_3
+    21300008: door_closing_4
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -31,7 +34,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: 0
+    filterMode: -1
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -55,12 +58,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: door_0
+      name: door_closing_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
+        width: 64
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -68,12 +71,51 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: door_1
+      name: door_closing_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 64
         y: 0
-        width: 32
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: door_closing_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: door_closing_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: door_closing_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}

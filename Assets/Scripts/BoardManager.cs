@@ -42,13 +42,15 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
-      parameters.Add("rooms_count", 15);
+      parameters.Add("rooms_count", 5);
       parameters.Add("min_room_size", 3);
       parameters.Add("max_room_size", 7);
       parameters.Add("transitions_type", 0);
       parameters.Add("are_connected", 1);
       parameters.Add("max_connections_delta", 1);
       parameters.Add("portals_percent", 10);
+      parameters.Add("corridor_curves", 2);
+
       
       dungeonScript = GetComponent<DungeonGenerator>();
       
@@ -77,7 +79,11 @@ public class BoardManager : MonoBehaviour
                      case 1: toInstantiate = floorRoomTiles[Random.Range (0, floorTiles.Length)]; break;
                      case 2: toInstantiate = wallRoomTiles[Random.Range (0, wallTiles.Length)]; break;
                      case 3:
-                     case 4: toInstantiate = door; break;
+                     case 4: {
+                        toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)];
+                        instantInstanciate(toInstantiate, x,y);
+                        toInstantiate = door; break;
+                     }
                      case 5: toInstantiate = floorTiles[Random.Range (0, floorTiles.Length)]; break;
                      case 6: toInstantiate = wallTiles[Random.Range (0, wallTiles.Length)]; break;
                      case 7: toInstantiate = portal; break;
@@ -86,10 +92,7 @@ public class BoardManager : MonoBehaviour
                      default: Debug.Log("Unexpected value"); break;
 
                   }
-               if(toInstantiate != null) {
-                  GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
-                  instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
-               }
+               instantInstanciate(toInstantiate,x,y);
             }
       }
       py = dungeonScript.playerX;
@@ -97,5 +100,15 @@ public class BoardManager : MonoBehaviour
       GameObject p_instance = Instantiate (playerTile, new Vector3 (px, py, 0f), Quaternion.identity) as GameObject;
       p_instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
       
+   }
+
+   private void instantInstanciate(GameObject toInstantiate, int x, int y)
+   {
+      int z = 0;
+  
+      if(toInstantiate != null) {
+         GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, z), Quaternion.identity) as GameObject;
+         instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+      }
    }
 }

@@ -17,13 +17,21 @@ public class Player : MonoBehaviour {
    {
       float xx = Input.GetAxis ("Horizontal");
       float yy = Input.GetAxis ("Vertical");
-        
+      
+      float use = Input.GetAxis("Fire1");
+      if (use>0)
+         sendtAction();
       //Use the two store floats to create a new Vector2 variable movement.
       Vector3 movement = new Vector3 (xx, yy, 0f);
-      Debug.Log(movement.ToString());
+      //Debug.Log(movement.ToString());
 
       //Call the AddForce function of our Rigidbody2D rb2d supplying movement multiplied by speed to move our player.
       transform.position += movement * speed * Time.fixedDeltaTime;
+   }
+   
+   public void sendtAction()
+   {
+      
    }
 
 }
