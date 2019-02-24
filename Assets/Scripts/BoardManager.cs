@@ -31,6 +31,9 @@ public class BoardManager : MonoBehaviour
    public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
    public GameObject playerTile;
    public int px, py;
+   public int oldpx, oldpy;
+   
+   private List<List<List<GameObject>>> boardArray = new List<List<List<GameObject>>>();
         
    private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
    private DungeonGenerator dungeonScript;
@@ -52,7 +55,6 @@ public class BoardManager : MonoBehaviour
       parameters.Add("corridor_curves", 2);
       parameters.Add("base_connecting", 2);
 
-      
       dungeonScript = GetComponent<DungeonGenerator>();
       
       dungeonScript.generate(parameters);
@@ -64,6 +66,14 @@ public class BoardManager : MonoBehaviour
    //Sets up the outer walls and floor (background) of the game board.
    void BoardSetup(List<List<int>> dungeonMap)
    {
+      for (int x = 0; x < columns; x++)
+      {
+         List<List<GameObject>> boardRow = new List<List<GameObject>>();
+         for (int y = 0; y < rows; y++)
+            boardRow.Add(new List<GameObject>());
+         boardArray.Add(boardRow);
+      }
+
       //Instantiate Board and set boardHolder to its transform.
       boardHolder = new GameObject ("Board").transform;
       for(int x = -1; x < columns + 1; x++) {
@@ -98,7 +108,10 @@ public class BoardManager : MonoBehaviour
       }
       py = dungeonScript.playerX;
       px = dungeonScript.playerY;
+      oldpy = 0;
+      oldpx = 0;
       GameObject p_instance = Instantiate (playerTile, new Vector3 (px, py, 0f), Quaternion.identity) as GameObject;
+      p_instance.name = "Player";
       p_instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
       
    }
@@ -110,6 +123,8 @@ public class BoardManager : MonoBehaviour
       if(toInstantiate != null) {
          GameObject instance = Instantiate (toInstantiate, new Vector3 (x, y, z), Quaternion.identity) as GameObject;
          instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
+         if (x>0 && y>0 && x<columns && y<rows && instance.name != "Player")
+            boardArray[x][y].Add(instance);
       }
    }
 
@@ -120,24 +135,42 @@ public class BoardManager : MonoBehaviour
 
    private void lightRecalc()
    {
-      //Transform player = gameObject.transform.Find("Player");
-      //for (int i=0; i< boardHolder.childCount; i++)
-      //{
-      //   Transform someTile = boardHolder.GetChild(i);
-      //   if (player == null || someTile == null)
-      //      continue;
-      //   float dist = Vector3.Distance(player.position, someTile.position);
-
-      //   if (dist>3)
-      //   {
-      //      SpriteRenderer sr = someTile.gameObject.GetComponent<SpriteRenderer>();
-      //      Color newColor = new Color();
-      //      newColor.r = 0f;
-      //      newColor.g = 0f;
-      //      newColor.b = 0f;
-      //      sr.color = newColor;            
-      //   }
-      //}
+      Transform player = boardHolder.Find("Player");
+      int lr = player.gameObject.GetComponent<Player>().lightRadius;
+      px = Mathf.RoundToInt(player.position.x);
+      py = Mathf.RoundToInt(player.position.y);
+      if (oldpx != px || oldpy != py)
+         for (int x = px-(lr/2+5); x< px+(lr/2+6); x++)
+            for(int y = py-(lr/2+6); y< py+(lr/2+6); y++)
+            {
+               if (boardArray[x][y].Count==0)
+                  continue;
+               float dist = Mathf.Sqrt(Mathf.Pow(x-px,2)+Mathf.Pow(y-py,2));
+               float cvalue = 0f;
+               if (dist<lr)
+                  cvalue = 1f;
+               else if(dist<lr+1)
+                  cvalue = 0.8f;
+               else if(dist<lr+2)
+                  cvalue = 0.6f;
+               else if(dist<lr+3)
+                  cvalue = 0.4f;
+               else if(dist<lr+4)
+                  cvalue = 0.2f;
+               else
+                  cvalue = 0.0f;
+               for (int j=0; j< boardArray[x][y].Count; j++)
+               {
+                  SpriteRenderer sr = boardArray[x][y][j].GetComponent<SpriteRenderer>();
+                  Color newColor = new Color();
+                  newColor.a = 1f;
+               
+                  newColor.r = cvalue;
+                  newColor.g = cvalue;
+                  newColor.b = cvalue;
+                  sr.color = newColor;
+               }
+            }
       
    } 
 }
