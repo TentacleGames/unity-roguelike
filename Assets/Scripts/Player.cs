@@ -14,6 +14,8 @@ public class Player : MonoBehaviour {
    private int MAX_SPCH_CD = 300;
    private int speechCooldown = 300;
 
+   public int lightRadius = 3;
+
 
     // Use this for initialization
     void Start()
