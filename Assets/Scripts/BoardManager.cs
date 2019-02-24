@@ -17,8 +17,8 @@ using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine r
 public class BoardManager : MonoBehaviour
 {
            
-   public int columns = 10;                                         //Number of columns in our game board.
-   public int rows = 10;                                            //Number of rows in our game board.
+   public int columns = 120;                                         //Number of columns in our game board.
+   public int rows = 120;                                            //Number of rows in our game board.
    public GameObject exit;                                         //Prefab to spawn for exit.
    public GameObject enter;                                         //Prefab to spawn for exit.
    public GameObject portal;                                         //Prefab to spawn for exit.
@@ -42,7 +42,7 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
-      parameters.Add("rooms_count", 5);
+      parameters.Add("rooms_count", 20);
       parameters.Add("min_room_size", 3);
       parameters.Add("max_room_size", 7);
       parameters.Add("transitions_type", 0);
@@ -50,6 +50,7 @@ public class BoardManager : MonoBehaviour
       parameters.Add("max_connections_delta", 1);
       parameters.Add("portals_percent", 10);
       parameters.Add("corridor_curves", 2);
+      parameters.Add("base_connecting", 2);
 
       
       dungeonScript = GetComponent<DungeonGenerator>();
@@ -111,4 +112,32 @@ public class BoardManager : MonoBehaviour
          instance.transform.SetParent (boardHolder); //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
       }
    }
+
+   private void FixedUpdate()
+   {
+      lightRecalc();
+   }
+
+   private void lightRecalc()
+   {
+      //Transform player = gameObject.transform.Find("Player");
+      //for (int i=0; i< boardHolder.childCount; i++)
+      //{
+      //   Transform someTile = boardHolder.GetChild(i);
+      //   if (player == null || someTile == null)
+      //      continue;
+      //   float dist = Vector3.Distance(player.position, someTile.position);
+
+      //   if (dist>3)
+      //   {
+      //      SpriteRenderer sr = someTile.gameObject.GetComponent<SpriteRenderer>();
+      //      Color newColor = new Color();
+      //      newColor.r = 0f;
+      //      newColor.g = 0f;
+      //      newColor.b = 0f;
+      //      sr.color = newColor;            
+      //   }
+      //}
+      
+   } 
 }
