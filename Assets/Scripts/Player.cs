@@ -5,9 +5,19 @@ using System.Collections;
 public class Player : MonoBehaviour {
    
    private Rigidbody2D rb2d;       //Store a reference to the Rigidbody2D component required to use 2D Physics.
-   private float speed = 3.5f;
+   private float speed = 3.7f;
+   private float NORMAL_SPEED = 3.7f;
+   private float MAX_SPEED = 6f;
+   private int stamina = 200;
+   private int MAX_STAM = 200;
+
+   //states
+   private bool running = false;
+   //*states
    
    private Text textBaloon;
+   private Slider staminaSlider;
+   private Image staminaBar;
    private DoorScript activated;
    private int MAX_ACT_CD = 50;
    private int act_cd = 0;
@@ -23,6 +33,9 @@ public class Player : MonoBehaviour {
         //Get and store a reference to the Rigidbody2D component so that we can access it.
         rb2d = GetComponent<Rigidbody2D> ();
         textBaloon = this.GetComponentInChildren<Text>();
+        staminaSlider = this.GetComponentInChildren<Slider>();
+        staminaSlider.maxValue = MAX_STAM;
+        staminaBar = staminaSlider.fillRect.GetComponent<Image>();
     }
 
     //FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
@@ -42,6 +55,9 @@ public class Player : MonoBehaviour {
          sendtAction();
 
       // movement
+      float shift = Input.GetAxis("Fire3");
+      runningEvaluation(shift);
+
       float xx = Input.GetAxis ("Horizontal");
       float yy = Input.GetAxis ("Vertical");
       rb2d.velocity = new Vector2(xx*speed, yy*speed);
@@ -54,6 +70,42 @@ public class Player : MonoBehaviour {
 
       updateText();
    }
+
+   private void runningEvaluation(float shift)
+   {
+      staminaSlider.value = stamina;
+      if (!running && stamina<MAX_STAM) //resting
+      {
+         stamina +=1;
+         if (speed > NORMAL_SPEED)
+            speed -= 1f;
+         if (speed < NORMAL_SPEED)
+            speed = NORMAL_SPEED;
+      } //no "else" statement to be able of running with stam less then maximum
+      
+      if (shift > 0 && stamina>0 && !running) //start running
+      {
+         running = true;
+      }
+      else if (shift > 0 && running && stamina>0) //running
+      {
+         if (speed < MAX_SPEED) //speeding up
+            speed += 0.5f;
+         if (speed > MAX_SPEED)
+            speed = MAX_SPEED;
+         stamina -=1;
+      }
+      else if (running && (shift > 0 && stamina<=0 || shift <=0) ) //stop running
+      {
+         running = false;
+      }
+      if (stamina == MAX_STAM && staminaBar.enabled)
+         staminaBar.enabled = false;
+         
+      else if (stamina != MAX_STAM && !staminaBar.enabled)
+         staminaBar.enabled = true;
+   }
+
 
    private void updateText()
    {
