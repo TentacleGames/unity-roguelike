@@ -17,8 +17,8 @@ using Random = UnityEngine.Random;      //Tells Random to use the Unity Engine r
 public class BoardManager : MonoBehaviour
 {
            
-   public int columns = 120;                                         //Number of columns in our game board.
-   public int rows = 120;                                            //Number of rows in our game board.
+   private int columns = 120;                                         //Number of columns in our game board.
+   private int rows = 120;                                            //Number of rows in our game board.
    public GameObject exit;                                         //Prefab to spawn for exit.
    public GameObject enter;                                         //Prefab to spawn for exit.
    public GameObject portal;                                         //Prefab to spawn for exit.
@@ -45,7 +45,7 @@ public class BoardManager : MonoBehaviour
       Dictionary<string, int> parameters = new Dictionary<string, int>();
       parameters.Add("width", columns);
       parameters.Add("height", rows);
-      parameters.Add("rooms_count", 20);
+      parameters.Add("rooms_count", 5);
       parameters.Add("min_room_size", 3);
       parameters.Add("max_room_size", 7);
       parameters.Add("transitions_type", 0);
@@ -143,6 +143,9 @@ public class BoardManager : MonoBehaviour
          for (int x = px-(lr/2+5); x< px+(lr/2+6); x++)
             for(int y = py-(lr/2+6); y< py+(lr/2+6); y++)
             {
+               if (x<0 || y<0 || x>=columns || y>=rows)
+                  continue;
+
                if (boardArray[x][y].Count==0)
                   continue;
                float dist = Mathf.Sqrt(Mathf.Pow(x-px,2)+Mathf.Pow(y-py,2));
